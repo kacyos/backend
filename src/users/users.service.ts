@@ -38,9 +38,7 @@ export class UsersService {
 
     const response = {
       user: {
-        public_id: newUser.public_id,
-        name: newUser.name,
-        email: newUser.email,
+        ...newUser
       },
       access_token: newUser.access_token,
     };
@@ -52,8 +50,12 @@ export class UsersService {
     return this.userRepository.find({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  // findOne(id: number) {
+  //   return `This action returns a #${id} user`;
+  // }
+
+  async findOne(email: string): Promise<User | undefined> {
+    return this.userRepository.findOne({email: email});
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -64,3 +66,8 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 }
+
+
+// public_id: newUser.public_id,
+//         name: newUser.name,
+//         email: newUser.email,
