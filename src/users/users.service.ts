@@ -31,7 +31,6 @@ export class UsersService {
 
     const user: User = this.userRepository.create({
       access_token: randomUUID(),
-
       ...createUserDto,
     });
 
