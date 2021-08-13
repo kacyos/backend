@@ -3,8 +3,8 @@
   "host": "localhost",
   "port": 5432,
   "username": "postgres",
-  "password": "123456",
-  "database": "Omega",
+  "password": "mysecretpassword",
+  "database": "omega",
   "entities": ["dist/**/*.entity{.ts,.js}"],
   "synchronize": true
 }

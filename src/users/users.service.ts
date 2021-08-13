@@ -7,6 +7,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
+import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -16,7 +18,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const userExists = await this.userRepository.findOne({
-      email: createUserDto.email,
+      email: createUserDto.email
     });
 
     if (!!userExists) {
@@ -31,7 +33,9 @@ export class UsersService {
 
     const user: User = this.userRepository.create({
       access_token: randomUUID(),
-      ...createUserDto,
+      name: createUserDto.name,
+      password: bcrypt.hashSync(createUserDto.password, 10),
+      email: createUserDto.email
     });
 
     const newUser: User = await this.userRepository.save(user);
@@ -44,7 +48,6 @@ export class UsersService {
       },
       access_token: newUser.access_token,
     };
-
     return response;
   }
 
