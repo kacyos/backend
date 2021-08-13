@@ -38,7 +38,9 @@ export class UsersService {
 
     const response = {
       user: {
-        ...newUser
+        public_id: newUser.public_id,
+        name: newUser.name,
+        email: newUser.email,
       },
       access_token: newUser.access_token,
     };
@@ -68,6 +70,3 @@ export class UsersService {
 }
 
 
-// public_id: newUser.public_id,
-//         name: newUser.name,
-//         email: newUser.email,
