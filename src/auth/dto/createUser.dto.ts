@@ -5,10 +5,10 @@ export class CreateUserDto {
   @MinLength(3, { message: 'O nome deve conter no mínimo 3 caracteres' })
   readonly name: string;
 
-  @IsEmail()
+  @IsEmail({}, { message: 'O email informado é inválido' })
   readonly email: string;
 
-  @MinLength(8, { message: 'A senha deve conter no mínimo 8 caracteres' })
   @IsString()
+  @MinLength(8, { message: 'A senha deve conter no mínimo 8 caracteres' })
   readonly password: string;
 }

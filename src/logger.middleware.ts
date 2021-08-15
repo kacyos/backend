@@ -1,4 +1,4 @@
-import {
+/*import {
   Injectable,
   NestMiddleware,
   UnauthorizedException,
@@ -20,4 +20,4 @@ export class LoggerMiddleware implements NestMiddleware {
     }
     next();
   }
-}
+}*/
