@@ -1,19 +1,17 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, IsInt, IsArray, IsDateString, ValidateNested, Validate, ArrayNotEmpty, IsPositive, IsEnum, IsBoolean, IsDate,  } from 'class-validator';
-// import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from 'class-validator';
+import { IsNotEmpty, IsString, IsInt, IsDateString, ValidateNested, Validate, ArrayNotEmpty, IsPositive, IsEnum, IsBoolean } from 'class-validator';
+import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from 'class-validator';
 
-// @ValidatorConstraint({ name: 'data_fim', async: false })
-// class DataFimValidation implements ValidatorConstraintInterface {
-//   validate(text: string, args: ValidationArguments) {
-//     console.log(args);
-//     return true
-//   }
+@ValidatorConstraint({ name: 'isGreaterThan', async: false })
+class DataFimConstraint implements ValidatorConstraintInterface {
+  validate(value: string, args: ValidationArguments) {
+    return value > args.object[args.constraints[0]];
+  }
 
-//   defaultMessage(args: ValidationArguments) {
-//     // here you can provide default error message if validation failed
-//     return 'Text ($value) is too short or too long!';
-//   }
-// }
+  defaultMessage(args: ValidationArguments) {
+    return "$property deve ser maior que $constraint1";
+  }
+}
 
 export enum FonteEnergia {
   CONVENCIONAL = "CONVENCIONAL",
@@ -28,28 +26,28 @@ export enum Submercado {
 }
 
 class Cargas {
-  @IsString()
-  @IsNotEmpty()
+  @IsString({message: "$property deve ser uma string"})
+  @IsNotEmpty({message: "$property não pode ser vazio"})
   nome_empresa: string;
 
-  @IsPositive()
-  @IsInt()
-  @IsNotEmpty()
+  @IsPositive({message: "$property deve ser um número positivo"})
+  @IsInt({message: "$property deve ser um número inteiro"})
+  @IsNotEmpty({message: "$property não pode ser vazio"})
   consumo_kwh: number;
 }
 
 export class CreatePropostaDto {
-  @IsDateString(null, {message: "$property deve ser uma data ISO 8601 válida"} )
+  @IsDateString(null, {message: "$property deve ser uma data ISO 8601 válida"})
   @IsNotEmpty({ message: "$property não pode ser vazio" })
   data_inicio: string;
 
-  // @Validate(DataFimValidation)
-  @IsDateString(null, {message: "$property deve ser uma data ISO 8601 válida"} )
+  @Validate(DataFimConstraint, ["data_inicio"])
+  @IsDateString(null, {message: "$property deve ser uma data ISO 8601 válida"})
   @IsNotEmpty({ message: "$property não pode ser vazio" })
   data_fim: string;
 
   @ValidateNested()
-  @ArrayNotEmpty({ message: "$property deve conter ao menos 1 carga" })
+  @ArrayNotEmpty({ message: "$property não pode ser vazio" })
   @Type(() => Cargas)
   cargas: Cargas[];
 
