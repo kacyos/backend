@@ -8,16 +8,14 @@ export class PropostaController {
   constructor(private readonly propostaService: PropostaService) {}
 
   @Post()
-  //convert JSON to typed object according to DTO class
-  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() createPropostaDto: CreatePropostaDto) {
     return this.propostaService.create(createPropostaDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.propostaService.findAll();
-  // }
+  @Get()
+  findAll() {
+    return this.propostaService.findAll();
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {
