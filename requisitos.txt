@@ -1,0 +1,20 @@
+ -> a data inicio deve ser maior ou igual a data corrente
+
+ -> a data fim deve ser maior que a data inicio
+
+ -> Carga (s) contratada (s): obrigatório, pode ser selecionada várias cargas, deve
+    ser selecionada pelo menos uma carga
+
+ -> fonte de energia: obrigatório, dever ser (CONVECIONAL, RENOVAVEL);
+
+ -> sub-mercado: obrigatório, dever ser (NORTE, NORDESTE, SUL, SULDESTE);
+
+ -> contratada: opcional, deve ser um valor booleano (Sim, Não) que diz se a
+    proposta foi contratada ou não pelo o usuário;
+
+ -> valor da proposta: será calculado automaticamente de acordo com os dados
+    informados e com as seguintes geras: O sistema assumirá que 1 kW terá o valor de 10.00 reais;
+
+ -> Cada sub-mercado terá um valor a ser acrescido: NORTE = 2.00, NORDESTE = -1.00, SUL = 3.50, SULDESTE = 1.50;
+
+ -> Cada fonte terá um valor a ser acrescido: CONVECIONAL = 5.00, RENOVAVEL = -2.00

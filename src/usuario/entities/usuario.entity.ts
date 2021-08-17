@@ -2,12 +2,12 @@ import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Entity()
-export class User {
+export class Usuario {
   @PrimaryGeneratedColumn('uuid')
-  readonly public_id: string;
+  public_id: string;
 
   @Column({ type: 'varchar', nullable: false })
-  readonly name: string;
+  name: string;
 
   @Column({ type: 'varchar', nullable: false, unique: true })
   email: string;

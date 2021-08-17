@@ -1,0 +1,34 @@
+import {
+  Request,
+  Controller,
+  Post,
+  UseGuards,
+  Body,
+  Get,
+  Param,
+} from '@nestjs/common';
+import { UsuarioService } from './usuario.service';
+import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
+import { CreateUserDto } from './dto/createUser.dto';
+
+@Controller('/users')
+export class UsuarioController {
+  constructor(private usuarioService: UsuarioService) {}
+
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(@Request() req: any) {
+    console.log(req.user);
+    return this.usuarioService.login(req.user);
+  }
+
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto) {
+    return this.usuarioService.create(createUserDto);
+  }
+
+  @Get(':access_token/verify')
+  validateToken(@Param('access_token') token: string) {
+    return this.usuarioService.validateToken(token);
+  }
+}

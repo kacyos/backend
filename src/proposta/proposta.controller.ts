@@ -1,12 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { PropostaService } from './proposta.service';
 import { CreatePropostaDto } from './dto/create-proposta.dto';
 import { UpdatePropostaDto } from './dto/update-proposta.dto';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('proposta')
 export class PropostaController {
   constructor(private readonly propostaService: PropostaService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createPropostaDto: CreatePropostaDto) {
     return this.propostaService.create(createPropostaDto);
