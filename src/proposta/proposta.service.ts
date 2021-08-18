@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { classToPlain } from 'class-transformer';
+import { UsuarioService } from 'src/usuario/usuario.service';
 import { Repository } from 'typeorm';
 import { CreatePropostaDto } from './dto/create-proposta.dto';
 import { UpdatePropostaDto } from './dto/update-proposta.dto';
@@ -10,16 +11,24 @@ export class PropostaService {
   constructor(
     @InjectRepository(Proposta)
     private propostaRepository: Repository<Proposta>,
+    private usuarioService: UsuarioService,
   ) {}
 
-  async create(createPropostaDto: CreatePropostaDto) {
+  async create(createPropostaDto: CreatePropostaDto, token: string) {
     try {
       createPropostaDto.valor_proposta = calcularProposta(createPropostaDto);
+
+      const [_, Token] = token.split(' ');
+
+      const usuario = await this.usuarioService.findOne({
+        access_token: Token,
+      });
 
       const proposta = this.propostaRepository.create({
         ...createPropostaDto,
         cargas: createPropostaDto.cargas,
         contratado: false,
+        usuario: usuario,
       });
 
       const novaProposta: Proposta = await this.propostaRepository.save(
@@ -32,9 +41,18 @@ export class PropostaService {
     }
   }
 
-  findAll() {
-    const propostas = this.propostaRepository.find({ relations: ['cargas'] });
-    return classToPlain(propostas, { exposeDefaultValues: true });
+  async findAll(token: string) {
+    const [_, Token] = token.split(' ');
+
+    const usuario = await this.usuarioService.findOne({
+      access_token: Token,
+      relations: ['proposta'],
+    });
+
+    /*const propostas = this.usuarioService.find(usuario.id, {
+      relations: ['cargas'],
+    });*/
+    return classToPlain(usuario, { exposeDefaultValues: true });
   }
 
   async contratarProposta(id: string) {

@@ -15,8 +15,10 @@ export class UsuarioService {
     private jwtService: JwtService,
   ) {}
 
-  async findOne(email: string): Promise<Usuario | null> {
-    const usuario = await this.userRepository.findOne({ email: email });
+  async findOne(t): Promise<Usuario | null> {
+    const usuario = await this.userRepository.findOne(t);
+    console.log(t);
+    console.log(usuario);
     return usuario;
   }
 
@@ -29,7 +31,6 @@ export class UsuarioService {
       },
       access_token: this.jwtService.sign(payload),
     };
-
     return resposta;
   }
 

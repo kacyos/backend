@@ -7,7 +7,7 @@ export class AuthService {
   constructor(private readonly usuarioService: UsuarioService) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usuarioService.findOne(email);
+    const user = await this.usuarioService.findOne({ email: email });
 
     if (user && bcrypt.compareSync(password, user.password)) {
       const { password, access_token, ...res } = user;

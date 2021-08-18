@@ -15,6 +15,8 @@ import { CreatePropostaDto } from './dto/create-proposta.dto';
 //import { UpdatePropostaDto } from './dto/update-proposta.dto';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Req } from '@nestjs/common';
+import { Request } from 'express';
 
 @Controller('propostas')
 export class PropostaController {
@@ -22,14 +24,14 @@ export class PropostaController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createPropostaDto: CreatePropostaDto) {
-    return this.propostaService.create(createPropostaDto);
+  create(@Req() req: Request) {
+    return this.propostaService.create(req.body, req.headers.authorization);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.propostaService.findAll();
+  findAll(@Req() req: Request) {
+    return this.propostaService.findAll(req.headers.authorization);
   }
 
   @Patch(':id')

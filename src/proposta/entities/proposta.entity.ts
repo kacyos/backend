@@ -4,6 +4,7 @@ import {
   Column,
   Entity,
   Generated,
+  JoinColumn,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -60,5 +61,7 @@ export class Proposta {
   @ManyToOne(() => Usuario, (usuario: Usuario) => usuario.proposta, {
     onDelete: 'CASCADE',
   })
+  @Exclude()
+  @JoinColumn()
   usuario: Usuario;
 }
