@@ -1,17 +1,12 @@
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Proposta } from './proposta.entity';
 
 @Entity()
 export class Cargas {
+  @Exclude()
   @PrimaryGeneratedColumn('increment')
-  public_id: string;
+  id: string;
 
   @Column('varchar')
   nome_empresa: string;
@@ -19,6 +14,8 @@ export class Cargas {
   @Column('numeric')
   consumo_kwh: number;
 
-  @ManyToMany(() => Proposta, (proposta: Proposta) => proposta.cargas)
+  @ManyToOne(() => Proposta, (proposta: Proposta) => proposta.cargas, {
+    onDelete: 'CASCADE',
+  })
   proposta: Proposta[];
 }

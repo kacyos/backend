@@ -1,8 +1,12 @@
+import { Exclude } from 'class-transformer';
+import { Usuario } from 'src/usuario/entities/usuario.entity';
 import {
   Column,
   Entity,
-  JoinTable,
+  Generated,
   ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Cargas } from './cargas.entity';
@@ -21,8 +25,13 @@ enum Submercado {
 
 @Entity()
 export class Proposta {
+  @Exclude()
   @PrimaryGeneratedColumn('increment')
-  readonly public_id: string;
+  id: string;
+
+  @Generated('uuid')
+  @Column()
+  public_id: string;
 
   @Column('date')
   data_inicio: string;
@@ -30,9 +39,9 @@ export class Proposta {
   @Column('date')
   data_fim: string;
 
-  @JoinTable()
-  @ManyToMany(() => Cargas, (cargas: Cargas) => cargas.proposta, {
+  @OneToMany(() => Cargas, (cargas: Cargas) => cargas.proposta, {
     cascade: true,
+    orphanedRowAction: 'delete',
   })
   cargas: Cargas[];
 
@@ -47,4 +56,9 @@ export class Proposta {
 
   @Column('numeric')
   valor_proposta: number;
+
+  @ManyToOne(() => Usuario, (usuario: Usuario) => usuario.proposta, {
+    onDelete: 'CASCADE',
+  })
+  usuario: Usuario;
 }

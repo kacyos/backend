@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { classToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { CreatePropostaDto } from './dto/create-proposta.dto';
 import { UpdatePropostaDto } from './dto/update-proposta.dto';
@@ -11,27 +12,57 @@ export class PropostaService {
     private propostaRepository: Repository<Proposta>,
   ) {}
 
-  async create(createPropostaDto: CreatePropostaDto): Promise<Proposta> {
-    createPropostaDto.valor_proposta = calcularProposta(createPropostaDto);
+  async create(createPropostaDto: CreatePropostaDto) {
+    try {
+      createPropostaDto.valor_proposta = calcularProposta(createPropostaDto);
 
-    const proposta = this.propostaRepository.create({
-      ...createPropostaDto,
-      cargas: createPropostaDto.cargas,
-      contratado: false,
-    });
+      const proposta = this.propostaRepository.create({
+        ...createPropostaDto,
+        cargas: createPropostaDto.cargas,
+        contratado: false,
+      });
 
-    const novaProposta: Proposta = await this.propostaRepository.save(proposta);
+      const novaProposta: Proposta = await this.propostaRepository.save(
+        proposta,
+      );
 
-    return novaProposta;
+      return classToPlain(novaProposta, { exposeDefaultValues: true });
+    } catch (error) {
+      return error;
+    }
   }
 
-  findAll(): Promise<Proposta[]> {
-    return this.propostaRepository.find({ relations: ['cargas'] });
+  findAll() {
+    const propostas = this.propostaRepository.find({ relations: ['cargas'] });
+    return classToPlain(propostas, { exposeDefaultValues: true });
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} proposta`;
-  // }
+  async contratarProposta(id: string) {
+    try {
+      const proposta = await this.propostaRepository.findOne(
+        { public_id: id },
+        {
+          relations: ['cargas'],
+        },
+      );
+
+      if (!proposta) {
+        return [];
+      }
+
+      proposta.contratado = true;
+
+      const propostaContratada = this.propostaRepository.save(proposta);
+
+      return classToPlain(propostaContratada, { exposeDefaultValues: true });
+    } catch (erro) {
+      return erro.message;
+    }
+  }
+
+  async excluirProposta(id: string) {
+    await this.propostaRepository.delete({ public_id: id });
+  }
 
   // update(id: number, updatePropostaDto: UpdatePropostaDto) {
   //   return `This action updates a #${id} proposta`;
