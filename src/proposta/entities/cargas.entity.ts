@@ -17,5 +17,5 @@ export class Cargas {
   @ManyToOne(() => Proposta, (proposta: Proposta) => proposta.cargas, {
     onDelete: 'CASCADE',
   })
-  proposta: Proposta[];
+  proposta: Proposta;
 }
