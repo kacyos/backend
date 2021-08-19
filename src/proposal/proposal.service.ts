@@ -78,7 +78,22 @@ export class ProposalService {
     return classToPlain(proposal);
   }
 
-  async remove(id: string) {
+  async remove(id: string, token: string) {
+    let { email } = jwt_decode(token) as any;
+
+    const user = await this.userService.findOne(email);
+
+    const proposal = await this.proposalRepository.findOne({
+      where: { usuario: user, public_id: id }
+    });
+
+    if (!proposal) {
+      throw new NotFoundException({
+        status: 404,
+        error: "Proposta não encontrada",
+      });
+    }
+
     return await this.proposalRepository.delete({ public_id: id });
   }
 

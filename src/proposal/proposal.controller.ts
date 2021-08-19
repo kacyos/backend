@@ -38,7 +38,7 @@ export class ProposalController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.proposalService.remove(id);
+  remove(@Param('id') id: string, @Req() req: Request) {
+    return this.proposalService.remove(id, req.headers.authorization);
   }
 }
