@@ -1,9 +1,9 @@
 import { Exclude } from 'class-transformer';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Proposta } from './proposta.entity';
+import { Proposal } from './proposal.entity';
 
 @Entity()
-export class Cargas {
+export class Loads {
   @Exclude()
   @PrimaryGeneratedColumn('increment')
   id: string;
@@ -14,8 +14,8 @@ export class Cargas {
   @Column('numeric')
   consumo_kwh: number;
 
-  @ManyToOne(() => Proposta, (proposta: Proposta) => proposta.cargas, {
+  @ManyToOne(() => Proposal, (proposta: Proposal) => proposta.cargas, {
     onDelete: 'CASCADE',
   })
-  proposta: Proposta;
+  proposta: Proposal;
 }

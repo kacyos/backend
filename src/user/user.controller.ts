@@ -4,16 +4,14 @@ import {
   Post,
   UseGuards,
   Body,
-  Get,
-  Param,
 } from '@nestjs/common';
-import { UsuarioService } from './usuario.service';
+import { UserService } from './user.service';
 import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
-import { CreateUserDto } from './dto/createUser.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('/users')
-export class UsuarioController {
-  constructor(private usuarioService: UsuarioService) {}
+export class UserController {
+  constructor(private usuarioService: UserService) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {

@@ -9,8 +9,7 @@ import {
   ArrayNotEmpty,
   IsPositive,
   IsEnum,
-  IsBoolean,
-  IsNumberString
+  IsBoolean
 } from 'class-validator';
 import {
   ValidatorConstraint,
@@ -41,19 +40,18 @@ export enum Submercado {
   SUDESTE = 'SUDESTE',
 }
 
-class Cargas {
+class Loads {
   @IsString({ message: '$property deve ser uma string' })
   @IsNotEmpty({ message: '$property não pode ser vazio' })
   nome_empresa: string;
 
   @IsPositive({ message: '$property deve ser um número positivo' })
   @IsInt({ message: '$property deve ser um número inteiro' })
-  // @IsNumberString(null, { message: '$property deve ser uma string' })
   @IsNotEmpty({ message: '$property não pode ser vazio' })
   consumo_kwh: number;
 }
 
-export class CreatePropostaDto {
+export class CreateProposalDto {
   @IsDateString(null, { message: '$property deve ser uma data ISO 8601 válida' })
   @IsNotEmpty({ message: '$property não pode ser vazio' })
   data_inicio: string;
@@ -65,8 +63,8 @@ export class CreatePropostaDto {
 
   @ValidateNested()
   @ArrayNotEmpty({ message: '$property não pode ser vazio' })
-  @Type(() => Cargas)
-  cargas: Cargas[];
+  @Type(() => Loads)
+  cargas: Loads[];
 
   @IsEnum(FonteEnergia, { message: '$property deve ser um enum válido (CONVENCIONAL | RENOVAVEL) ' })
   fonte_energia: string;

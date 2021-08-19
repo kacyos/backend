@@ -1,16 +1,15 @@
 import { Exclude } from 'class-transformer';
-import { Usuario } from 'src/usuario/entities/usuario.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   Entity,
   Generated,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Cargas } from './cargas.entity';
+import { Loads } from './loads.entity';
 
 enum FonteEnergia {
   CONVENCIONAL = 'CONVENCIONAL',
@@ -25,7 +24,7 @@ enum Submercado {
 }
 
 @Entity()
-export class Proposta {
+export class Proposal {
   @Exclude()
   @PrimaryGeneratedColumn('increment')
   id: string;
@@ -40,11 +39,11 @@ export class Proposta {
   @Column('date')
   data_fim: string;
 
-  @OneToMany(() => Cargas, (cargas: Cargas) => cargas.proposta, {
+  @OneToMany(() => Loads, (cargas: Loads) => cargas.proposta, {
     cascade: true,
     orphanedRowAction: 'delete',
   })
-  cargas: Cargas[];
+  cargas: Loads[];
 
   @Column('enum', { enum: FonteEnergia })
   fonte_energia: string;
@@ -61,10 +60,10 @@ export class Proposta {
   @Column('numeric')
   valor_proposta: number;
 
-  @ManyToOne(() => Usuario, (usuario: Usuario) => usuario.proposta, {
+  @ManyToOne(() => User, (usuario: User) => usuario.proposta, {
     onDelete: 'CASCADE',
   })
   @Exclude()
   @JoinColumn()
-  usuario: Usuario;
+  usuario: User;
 }

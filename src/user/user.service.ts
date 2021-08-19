@@ -2,47 +2,46 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Usuario } from './entities/usuario.entity';
-import { CreateUserDto } from './dto/createUser.dto';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 import { BadRequestException } from '@nestjs/common';
+
 @Injectable()
-export class UsuarioService {
+export class UserService {
   constructor(
-    @InjectRepository(Usuario)
-    private userRepository: Repository<Usuario>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) { }
 
-  findOne(email: string): Promise<Usuario> {
+  findOne(email: string): Promise<User> {
     return this.userRepository.findOne({ email });
   }
 
   async create(createUserDto: CreateUserDto) {
-    const usuarioExiste = await this.userRepository.findOne({
+    const userExists = await this.userRepository.findOne({
       email: createUserDto.email,
     });
 
-    if (usuarioExiste) {
+    if (userExists) {
       throw new BadRequestException({
         status: 400,
         error: 'Email já cadastrado',
       });
     }
 
-    const novoUsuario = this.userRepository.create({
+    const newUser = this.userRepository.create({
       ...createUserDto,
       access_token: this.jwtService.sign({ email: createUserDto.email }),
     });
 
-    const usuario = await this.userRepository.save(novoUsuario);
+    const user = await this.userRepository.save(newUser);
+
+    const { public_id, name, email, access_token } = user;
 
     return {
-      user: {
-        public_id: usuario.public_id,
-        name: usuario.name,
-        email: usuario.email,
-      },
-      access_token: usuario.access_token,
+      user: { public_id, name, email },
+      access_token
     };
   }
 

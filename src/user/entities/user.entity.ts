@@ -4,14 +4,13 @@ import {
   Entity,
   Generated,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Proposta } from 'src/proposta/entities/proposta.entity';
+import { Proposal } from 'src/proposal/entities/proposal.entity';
 
 @Entity()
-export class Usuario {
+export class User {
   @PrimaryGeneratedColumn('increment')
   id: string;
 
@@ -32,11 +31,11 @@ export class Usuario {
     this.password = await bcrypt.hash(this.password, 10);
   }
 
-  @OneToMany(() => Proposta, (proposta: Proposta) => proposta.usuario, {
+  @OneToMany(() => Proposal, (proposta: Proposal) => proposta.usuario, {
     cascade: true,
     orphanedRowAction: 'delete',
   })
-  proposta: Proposta[];
+  proposta: Proposal[];
 
   @Column({ type: 'varchar' })
   access_token: string;
