@@ -15,19 +15,14 @@ import { CreateUserDto } from './dto/createUser.dto';
 export class UsuarioController {
   constructor(private usuarioService: UsuarioService) {}
 
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  async login(@Request() req: any) {
-    return this.usuarioService.login(req.user);
-  }
-
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     return this.usuarioService.create(createUserDto);
   }
 
-  @Get(':access_token/verify')
-  validateToken(@Param('access_token') token: string) {
-    return this.usuarioService.validateToken(token);
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(@Request() req: any) {
+    return this.usuarioService.login(req.user);
   }
 }

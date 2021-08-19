@@ -1,37 +1,20 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from './entities/usuario.entity';
-import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from './dto/createUser.dto';
-import { HttpException } from '@nestjs/common';
-
+import { BadRequestException } from '@nestjs/common';
 @Injectable()
 export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
     private userRepository: Repository<Usuario>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
-  async findOne(t): Promise<Usuario | null> {
-    const usuario = await this.userRepository.findOne(t);
-    console.log(t);
-    console.log(usuario);
-    return usuario;
-  }
-
-  async login(loginDto: LoginDto) {
-    const payload = { email: loginDto.email };
-
-    const resposta = {
-      user: {
-        ...loginDto,
-      },
-      access_token: this.jwtService.sign(payload),
-    };
-    return resposta;
+  findOne(email: string): Promise<Usuario> {
+    return this.userRepository.findOne({ email });
   }
 
   async create(createUserDto: CreateUserDto) {
@@ -40,23 +23,20 @@ export class UsuarioService {
     });
 
     if (usuarioExiste) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: `Email já cadastrado`,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException({
+        status: 400,
+        error: 'Email já cadastrado',
+      });
     }
 
-    const novoUsuario: Usuario = this.userRepository.create({
+    const novoUsuario = this.userRepository.create({
       ...createUserDto,
       access_token: this.jwtService.sign({ email: createUserDto.email }),
     });
 
-    const usuario: Usuario = await this.userRepository.save(novoUsuario);
+    const usuario = await this.userRepository.save(novoUsuario);
 
-    const resposta = {
+    return {
       user: {
         public_id: usuario.public_id,
         name: usuario.name,
@@ -64,16 +44,19 @@ export class UsuarioService {
       },
       access_token: usuario.access_token,
     };
-
-    return resposta;
   }
 
-  async validateToken(token: string): Promise<boolean> {
-    try {
-      await this.jwtService.verifyAsync(token);
-      return true;
-    } catch (err) {
-      return false;
+  async login(user: any) {
+    const { public_id, name, email } = user;
+
+    return {
+      user: {
+        public_id,
+        name,
+        email,
+      },
+      access_token: this.jwtService.sign({ email }),
     }
   }
+
 }
