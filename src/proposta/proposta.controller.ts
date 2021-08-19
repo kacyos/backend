@@ -34,23 +34,15 @@ export class PropostaController {
     return this.propostaService.findAll(req.headers.authorization);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  contratarProposta(@Param('id') id: string) {
-    return this.propostaService.contratarProposta(id);
+  contratarProposta(@Param('id') id: string, @Req() req: Request) {
+    return this.propostaService.contratarProposta(id, req.headers.authorization);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  excluirProposta(@Param('id') id: string) {
-    return this.propostaService.excluirProposta(id);
+  remove(@Param('id') id: string) {
+    return this.propostaService.remove(id);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updatePropostaDto: UpdatePropostaDto) {
-  //   return this.propostaService.update(+id, updatePropostaDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.propostaService.remove(+id);
-  // }
 }
