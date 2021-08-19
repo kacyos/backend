@@ -10,6 +10,7 @@ import {
   IsPositive,
   IsEnum,
   IsBoolean,
+  IsNumberString
 } from 'class-validator';
 import {
   ValidatorConstraint,
@@ -47,43 +48,36 @@ class Cargas {
 
   @IsPositive({ message: '$property deve ser um número positivo' })
   @IsInt({ message: '$property deve ser um número inteiro' })
+  // @IsNumberString(null, { message: '$property deve ser uma string' })
   @IsNotEmpty({ message: '$property não pode ser vazio' })
   consumo_kwh: number;
 }
 
 export class CreatePropostaDto {
-  @IsDateString(null, {
-    message: '$property deve ser uma data ISO 8601 válida',
-  })
+  @IsDateString(null, { message: '$property deve ser uma data ISO 8601 válida' })
   @IsNotEmpty({ message: '$property não pode ser vazio' })
   data_inicio: string;
 
   @Validate(DataFimConstraint, ['data_inicio'])
-  @IsDateString(null, {
-    message: '$property deve ser uma data ISO 8601 válida',
-  })
+  @IsDateString(null, { message: '$property deve ser uma data ISO 8601 válida' })
   @IsNotEmpty({ message: '$property não pode ser vazio' })
   data_fim: string;
 
   @ValidateNested()
   @ArrayNotEmpty({ message: '$property não pode ser vazio' })
   @Type(() => Cargas)
-  //@IsArray({ each: false })
   cargas: Cargas[];
 
-  @IsEnum(FonteEnergia, {
-    message: '$property deve ser um enum válido (CONVENCIONAL | RENOVAVEL) ',
-  })
+  @IsEnum(FonteEnergia, { message: '$property deve ser um enum válido (CONVENCIONAL | RENOVAVEL) ' })
   fonte_energia: string;
 
-  @IsEnum(Submercado, {
-    message:
-      '$property deve ser um enum válido (NORTE | NORDESTE | SUL | SUDESTE)',
-  })
+  @IsEnum(Submercado, { message: '$property deve ser um enum válido (NORTE | NORDESTE | SUL | SUDESTE)' })
   submercado: string;
 
   @IsBoolean({ message: '$property deve ser um boolean' })
   contratado = false;
+
+  consumo_total: number;
 
   valor_proposta: number;
 }

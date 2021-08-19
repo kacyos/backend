@@ -52,8 +52,11 @@ export class Proposta {
   @Column('enum', { enum: Submercado })
   submercado: string;
 
-  @Column('boolean')
+  @Column('boolean', { default: false })
   contratado: boolean;
+
+  @Column('numeric')
+  consumo_total: number;
 
   @Column('numeric')
   valor_proposta: number;
